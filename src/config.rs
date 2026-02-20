@@ -122,15 +122,27 @@ impl Config {
 pub struct RpcClient {
     client: reqwest::Client,
     url: String,
+    request_id: std::sync::atomic::AtomicU64,
 }
 
 impl RpcClient {
     /// Create a new RPC client from daemon connection settings.
     pub fn new(daemon: &DaemonRpc) -> Self {
+        let client = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .expect("failed to build HTTP client");
+
         Self {
-            client: reqwest::Client::new(),
+            client,
             url: daemon.url(),
+            request_id: std::sync::atomic::AtomicU64::new(0),
         }
+    }
+
+    /// Return the configured RPC endpoint URL.
+    pub fn url(&self) -> &str {
+        &self.url
     }
 
     /// Send a JSON-RPC request and deserialize the result.
@@ -139,9 +151,13 @@ impl RpcClient {
         P: Serialize,
         R: for<'de> Deserialize<'de>,
     {
+        let id = self
+            .request_id
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
         let body = serde_json::json!({
             "jsonrpc": "2.0",
-            "id": "0",
+            "id": id.to_string(),
             "method": method,
             "params": params,
         });
