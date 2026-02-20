@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Cam Porterfield <fundlush@proton.me>"]
 description = "A Monero M-of-N multisig wallet tool for creating wallets, exchanging keys, and co-signing transactions"
 license = "MIT"
-repository = "https://github.com/yascherice/monero-multisig"
+repository = "https://github.com/melonmelonz/monero-multisig"
 keywords = ["monero", "multisig", "cryptocurrency", "wallet"]
 categories = ["command-line-utilities", "cryptography::cryptocurrencies"]
 

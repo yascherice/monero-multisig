@@ -1,6 +1,6 @@
 # monero-multisig
 
-[![CI](https://github.com/yascherice/monero-multisig/actions/workflows/ci.yml/badge.svg)](https://github.com/yascherice/monero-multisig/actions/workflows/ci.yml)
+[![CI](https://github.com/melonmelonz/monero-multisig/actions/workflows/ci.yml/badge.svg)](https://github.com/melonmelonz/monero-multisig/actions/workflows/ci.yml)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -50,7 +50,7 @@ trying my hand at m of n, will add more robust web eventually
 ## Build
 
 ```bash
-git clone https://github.com/yascherice/monero-multisig.git
+git clone https://github.com/melonmelonz/monero-multisig.git
 cd monero-multisig
 cargo build --release
 ```
