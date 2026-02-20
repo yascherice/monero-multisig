@@ -170,14 +170,19 @@ impl RpcClient {
             .await?
             .error_for_status()?;
 
-        let rpc_response: JsonRpcResponse<R> = response.json().await?;
+        let resp_text = response.text().await?;
+
+        tracing::debug!("RPC response for {method}: {resp_text}");
+
+        let rpc_response: JsonRpcResponse<R> = serde_json::from_str(&resp_text)
+            .map_err(|e| anyhow::anyhow!("failed to parse RPC response: {e}"))?;
 
         match rpc_response.result {
             Some(result) => Ok(result),
             None => {
                 let err = rpc_response
                     .error
-                    .map(|e| e.message)
+                    .map(|e| format!("{} (code: {})", e.message, e.code))
                     .unwrap_or_else(|| "unknown RPC error".to_string());
                 Err(anyhow::anyhow!("RPC error: {err}"))
             }
@@ -193,5 +198,6 @@ struct JsonRpcResponse<T> {
 
 #[derive(Debug, Deserialize)]
 struct JsonRpcError {
+    code: i64,
     message: String,
 }
