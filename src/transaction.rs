@@ -208,6 +208,58 @@ pub fn format_xmr(piconero: u64) -> String {
     format!("{whole}.{frac:012}")
 }
 
+// ── Balance queries ─────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Balance {
+    /// Confirmed balance in atomic units.
+    pub balance: u64,
+    /// Unconfirmed (pending) balance in atomic units.
+    pub unlocked_balance: u64,
+}
+
+#[derive(Debug, Deserialize)]
+struct GetBalanceResponse {
+    balance: u64,
+    unlocked_balance: u64,
+}
+
+/// Query the wallet's current balance.
+pub async fn get_balance(rpc: &RpcClient) -> Result<Balance> {
+    let resp: GetBalanceResponse = rpc
+        .request(
+            "get_balance",
+            &serde_json::json!({ "account_index": 0 }),
+        )
+        .await
+        .context("get_balance RPC call failed")?;
+
+    Ok(Balance {
+        balance: resp.balance,
+        unlocked_balance: resp.unlocked_balance,
+    })
+}
+
+/// Validate that a Monero address has the expected length and prefix.
+pub fn validate_address(address: &str, network: crate::config::Network) -> Result<()> {
+    let expected_prefix = match network {
+        crate::config::Network::Mainnet => '4',
+        crate::config::Network::Testnet | crate::config::Network::Stagenet => '9',
+    };
+
+    anyhow::ensure!(
+        address.starts_with(expected_prefix),
+        "address should start with '{expected_prefix}' for {network}"
+    );
+    anyhow::ensure!(
+        address.len() == 95 || address.len() == 106,
+        "invalid address length: {} (expected 95 for standard or 106 for integrated)",
+        address.len()
+    );
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -225,5 +277,23 @@ mod tests {
     #[test]
     fn test_format_xmr_zero() {
         assert_eq!(format_xmr(0), "0.000000000000");
+    }
+
+    #[test]
+    fn test_validate_address_mainnet() {
+        let valid = "4".to_string() + &"A".repeat(94);
+        assert!(validate_address(&valid, crate::config::Network::Mainnet).is_ok());
+    }
+
+    #[test]
+    fn test_validate_address_wrong_prefix() {
+        let invalid = "9".to_string() + &"A".repeat(94);
+        assert!(validate_address(&invalid, crate::config::Network::Mainnet).is_err());
+    }
+
+    #[test]
+    fn test_validate_address_wrong_length() {
+        let short = "4".to_string() + &"A".repeat(50);
+        assert!(validate_address(&short, crate::config::Network::Mainnet).is_err());
     }
 }
