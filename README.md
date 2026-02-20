@@ -49,7 +49,7 @@ A command-line tool for creating and managing Monero M-of-N multisig wallets. Bu
 ## Build
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/monero-multisig.git
+git clone https://github.com/yascherice/monero-multisig.git
 cd monero-multisig
 cargo build --release
 ```
