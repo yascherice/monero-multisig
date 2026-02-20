@@ -122,7 +122,7 @@ impl Config {
 pub struct RpcClient {
     client: reqwest::Client,
     url: String,
-    request_id: std::sync::atomic::AtomicU64,
+    request_id: std::sync::Arc<std::sync::atomic::AtomicU64>,
 }
 
 impl RpcClient {
@@ -136,7 +136,7 @@ impl RpcClient {
         Self {
             client,
             url: daemon.url(),
-            request_id: std::sync::atomic::AtomicU64::new(0),
+            request_id: std::sync::Arc::new(std::sync::atomic::AtomicU64::new(0)),
         }
     }
 
