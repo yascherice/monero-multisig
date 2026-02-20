@@ -221,3 +221,18 @@ pub fn load_wallet_state(data_dir: &Path) -> Result<WalletState> {
     let state: WalletState = serde_json::from_str(&contents)?;
     Ok(state)
 }
+
+/// Check whether a wallet state file exists in the data directory.
+pub fn wallet_exists(data_dir: &Path) -> bool {
+    data_dir.join("wallet_state.json").exists()
+}
+
+/// Delete wallet state and associated data.
+pub fn delete_wallet(data_dir: &Path) -> Result<()> {
+    let path = data_dir.join("wallet_state.json");
+    if path.exists() {
+        std::fs::remove_file(&path)?;
+        tracing::info!("Wallet state removed from {}", path.display());
+    }
+    Ok(())
+}
