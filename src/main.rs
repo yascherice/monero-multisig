@@ -71,6 +71,9 @@ enum Command {
         info: Vec<String>,
     },
 
+    /// Check the wallet's current balance.
+    Balance,
+
     /// Build an unsigned transaction and output the multisig tx set.
     BuildTx {
         /// Recipient address.
@@ -188,6 +191,12 @@ async fn main() -> Result<()> {
         Command::ImportInfo { info } => {
             transaction::import_multisig_info(&rpc, &info).await?;
             println!("Multisig info imported successfully. Balance is now synchronized.");
+        }
+
+        Command::Balance => {
+            let balance = transaction::get_balance(&rpc).await?;
+            println!("Balance:          {} XMR", transaction::format_xmr(balance.balance));
+            println!("Unlocked balance: {} XMR", transaction::format_xmr(balance.unlocked_balance));
         }
 
         Command::BuildTx {
