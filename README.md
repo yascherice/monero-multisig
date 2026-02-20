@@ -110,6 +110,12 @@ monero-multisig sign-tx --tx-data "<tx_set_hex>"
 # → outputs updated tx set with their signature applied
 ```
 
+### Check balance
+
+```bash
+monero-multisig balance
+```
+
 ### 5. Submit
 
 Once the threshold number of signatures is collected:
