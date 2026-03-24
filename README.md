@@ -1,3 +1,10 @@
+                                       _ _   _     _       
+__  ___ __ ___  _ __   _ __ ___  _   _| | |_(_)___(_) __ _ 
+\ \/ / '_ ` _ \| '__| | '_ ` _ \| | | | | __| / __| |/ _` |
+ >  <| | | | | | |    | | | | | | |_| | | |_| \__ \ | (_| |
+/_/\_\_| |_| |_|_|    |_| |_| |_|\__,_|_|\__|_|___/_|\__, |
+                                                     |___/ 
+
 # monero-multisig
 
 [![CI](https://github.com/melonmelonz/monero-multisig/actions/workflows/ci.yml/badge.svg)](https://github.com/melonmelonz/monero-multisig/actions/workflows/ci.yml)
